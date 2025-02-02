@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -34,10 +36,11 @@ class TestControllerTest {
         String test = "Some test";
         when(testService.generateTest(taskId)).thenReturn(test);
 
-        String response = testService.generateTest(taskId);
+        ResponseEntity<String> response = testController.generateTestByTask(taskId);
 
         verify(testService, times(1)).generateTest(taskId);
-        assertThat(response)
-                .isEqualTo(test);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(test);
     }
+
 }
