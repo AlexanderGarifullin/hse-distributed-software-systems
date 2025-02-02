@@ -63,4 +63,15 @@ public class HashMapStorage<T, ID> implements InMemoryStorage<T, ID> {
     private String entityAlreadyExistsMsg(ID id) {
         return "Entity with ID " + id + " already exists.";
     }
+
+    /**
+     * Clears all the entities from the storage.
+     * This method removes all entries from the underlying storage (ConcurrentHashMap),
+     * effectively resetting the storage to an empty state.
+     *
+     * This operation is irreversible, and once called, all stored data will be lost.
+     */
+    public void clear() {
+        storage.clear();
+    }
 }
