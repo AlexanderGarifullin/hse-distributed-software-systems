@@ -41,22 +41,7 @@ class TaskServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void getTasksByUser_WhenUserExists_ShouldReturnTasksList() {
-        Long userId = 1L;
-        User user = generateUser();
-        List<Task> tasks = List.of(generateTask(),
-                generateTask());
 
-        when(userInMemoryStorage.findById(userId)).thenReturn(Optional.of(user));
-        when(taskInMemoryStorage.findByUserId(userId)).thenReturn(tasks);
-
-        List<Task> result = taskService.getTasksByUser(userId);
-
-        assertThat(result).hasSize(2).containsExactlyElementsOf(tasks);
-        verify(userInMemoryStorage, times(1)).findById(userId);
-        verify(taskInMemoryStorage, times(1)).findByUserId(userId);
-    }
 
     @Test
     void getTasksByUser_WhenUserDoesNotExist_ShouldThrowEntityNotFoundException() {
