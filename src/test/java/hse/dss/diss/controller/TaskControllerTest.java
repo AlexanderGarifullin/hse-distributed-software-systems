@@ -34,15 +34,16 @@ class TaskControllerTest {
 
     @Test
     void getTasksByUser_WithExistingTasks_ShouldReturnTaskList() {
-        Task t1 = Task.builder().build();
-        Task t2 = Task.builder().build();
+        Task t1 = generateTask();
+        Task t2 = generateTask();
         Long taskUser = 1L;
         when(taskService.getTasksByUser(taskUser)).thenReturn(List.of(t1, t2));
 
-        List<Task> response = taskService.getTasksByUser(taskUser);
+        ResponseEntity<List<Task>> response = taskController.getTasksByUser(taskUser);
 
         verify(taskService, times(1)).getTasksByUser(taskUser);
-        assertThat(response)
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody())
                 .hasSize(2)
                 .containsExactly(t1, t2);
     }
@@ -52,11 +53,11 @@ class TaskControllerTest {
         Long taskUser = 1L;
         when(taskService.getTasksByUser(taskUser)).thenReturn(List.of());
 
-        List<Task> response = taskService.getTasksByUser(taskUser);
+        ResponseEntity<List<Task>> response = taskController.getTasksByUser(taskUser);
 
         verify(taskService, times(1)).getTasksByUser(taskUser);
-        assertThat(response)
-                .isEmpty();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEmpty();
     }
 
     @Test
@@ -65,13 +66,12 @@ class TaskControllerTest {
         Long taskId = 1L;
         when(taskService.getTaskById(taskId)).thenReturn(task);
 
-        Task response = taskService.getTaskById(taskId);
+        ResponseEntity<Task> response = taskController.getTaskById(taskId);
 
         verify(taskService, times(1)).getTaskById(taskId);
-        assertThat(response)
-                .isEqualTo(task);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(task);
     }
-
 
     @Test
     void createTask_WithValidPayload_ShouldReturnCreatedTask() {
@@ -80,11 +80,11 @@ class TaskControllerTest {
         Task task = generateTask();
         when(taskService.createTask(userId, payload)).thenReturn(task);
 
-        Task response = taskService.createTask(userId, payload);
+        ResponseEntity<Task> response = taskController.createTask(userId, payload);
 
         verify(taskService, times(1)).createTask(userId, payload);
-        assertThat(response)
-                .isEqualTo(task);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(task);
     }
 
     @Test
@@ -94,11 +94,11 @@ class TaskControllerTest {
         Task task = generateTask();
         when(taskService.updateTask(taskId, payload)).thenReturn(task);
 
-        Task response = taskService.updateTask(taskId, payload);
+        ResponseEntity<Task> response = taskController.updateTask(taskId, payload);
 
         verify(taskService, times(1)).updateTask(taskId, payload);
-        assertThat(response)
-                .isEqualTo(task);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(task);
     }
 
     @Test
@@ -111,7 +111,6 @@ class TaskControllerTest {
         verify(taskService, times(1)).deleteTask(taskId);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
-
 
     private Task generateTask() {
         return Task.builder()
