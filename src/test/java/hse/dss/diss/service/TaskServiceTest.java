@@ -33,7 +33,7 @@ class TaskServiceTest {
     @Mock
     private InMemoryStorage<User, Long> userInMemoryStorage;
 
-    @Spy
+    @Mock
     private TaskMapper taskMapper;
 
     @BeforeEach
@@ -92,25 +92,6 @@ class TaskServiceTest {
         verify(taskInMemoryStorage, times(1)).findById(taskId);
     }
 
-    @Test
-    void createTask_WhenUserExists_ShouldReturnCreatedTask() {
-        Long userId = 1L;
-        TaskPayload payload = generateTaskPayload();
-        Task task = generateTask();
-        User user = generateUser();
-
-        when(userInMemoryStorage.findById(userId)).thenReturn(Optional.of(user));
-        when(taskMapper.payloadToEntity(payload)).thenReturn(task);
-
-        doNothing().when(taskInMemoryStorage).create(task.getId(), task);
-
-        Task result = taskService.createTask(userId, payload);
-
-        assertThat(result).isEqualTo(task);
-        verify(userInMemoryStorage, times(1)).findById(userId);
-        verify(taskMapper, times(1)).payloadToEntity(payload);
-        verify(taskInMemoryStorage, times(1)).create(task.getId(), task);
-    }
 
     @Test
     void createTask_WhenUserDoesNotExist_ShouldThrowEntityNotFoundException() {

@@ -42,7 +42,7 @@ class TestControllerIntegrationTest {
     }
 
     @Test
-    void testGenerateTestByTask() throws Exception {
+    void testGenerateTestByTask_isSuccess() throws Exception {
         mockMvc.perform(get(BASE_URL + "1"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Some test"));
