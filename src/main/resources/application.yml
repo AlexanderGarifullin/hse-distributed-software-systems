@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: T-Bank2024.Fintech-Java-dev-Spring
+  profiles:
+    active: prod
