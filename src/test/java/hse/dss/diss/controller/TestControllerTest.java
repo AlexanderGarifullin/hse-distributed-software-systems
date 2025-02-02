@@ -2,10 +2,16 @@ package hse.dss.diss.controller;
 
 import hse.dss.diss.service.TestService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 
 @ActiveProfiles("test")
@@ -22,5 +28,16 @@ class TestControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    @Test
+    void generateTest_WithValidTaskId_ShouldReturnGeneratedTest() {
+        Long taskId = 1L;
+        String test = "Some test";
+        when(testService.generateTest(taskId)).thenReturn(test);
 
+        String response = testService.generateTest(taskId);
+
+        verify(testService, times(1)).generateTest(taskId);
+        assertThat(response)
+                .isEqualTo(test);
+    }
 }

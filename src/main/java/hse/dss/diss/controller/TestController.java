@@ -28,7 +28,7 @@ public class TestController {
      * @return a ResponseEntity containing the generated test as a String
      */
     @GetMapping("/task/{taskId}")
-    public ResponseEntity<String> getTasksByUser(@PathVariable Long taskId) {
+    public ResponseEntity<String> generateTestByTask(@PathVariable Long taskId) {
 
         String test = testService.generateTest(taskId);
         return ResponseEntity.ok(test);
