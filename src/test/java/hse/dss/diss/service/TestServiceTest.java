@@ -1,6 +1,7 @@
 package hse.dss.diss.service;
 
 import hse.dss.diss.entity.Task;
+import hse.dss.diss.exception.EntityNotFoundException;
 import hse.dss.diss.repository.storage.TaskInMemoryStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
@@ -40,6 +42,18 @@ class TestServiceTest {
         verify(taskInMemoryStorage, times(1)).findById(taskId);
         assertThat(msg)
                 .isEqualTo("Some test");
+    }
+
+    @Test
+    void generateTest_WhenTaskDoesNotExist_ShouldThrowEntityNotFoundException() {
+        Long taskId = 1L;
+        when(taskInMemoryStorage.findById(taskId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> testService.generateTest(taskId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("Task with ID " + taskId + " not found");
+
+        verify(taskInMemoryStorage, times(1)).findById(taskId);
     }
 
 
