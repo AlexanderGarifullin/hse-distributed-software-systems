@@ -60,7 +60,21 @@ It provides an endpoint for fetching a test related to a specific task.
     - **Parameters:**
         - `taskId` (Path): The ID of the task for which to generate a test.
     - **Returns:** The generated test as a String.
+---
 
+## Storage and Initial Data
+
+- **Storage:** The application uses an **InMemoryStorage** for storing tasks and user data. This means that all data is stored in memory and will be lost when the application is restarted.
+
+- **Starter User:** When the application starts, a default user is created with the following details:
+  ```java
+  private User createStarterUser() {
+      return User.builder()
+              .id(1L)
+              .login("STARTER")
+              .build();
+  }
+    ```
 ---
 
 This README provides a concise overview of the available endpoints and their functionalities. 
