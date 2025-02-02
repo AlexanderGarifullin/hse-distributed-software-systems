@@ -1,5 +1,5 @@
 spring:
   application:
-    name: T-Bank2024.Fintech-Java-dev-Spring
+    name: hse-distributed-software-systems
   profiles:
     active: prod
