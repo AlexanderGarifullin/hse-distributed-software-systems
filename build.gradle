@@ -2,6 +2,9 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.2'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'jacoco'
+	id 'checkstyle'
+
 }
 
 group = 'hse.dss'
@@ -23,15 +26,24 @@ repositories {
 	mavenCentral()
 }
 
+checkstyle {
+	toolVersion = '10.3'
+	configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+}
+
 dependencies {
 	// spring
-	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	// lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
 	//db
+	implementation 'org.liquibase:liquibase-core'
 	runtimeOnly 'org.postgresql:postgresql'
 
 	// test
@@ -41,4 +53,13 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+jacocoTestReport {
+	reports {
+		html.required = true
+		xml.required  = true
+	}
+
+	classDirectories.setFrom(classDirectories.files - files("build/classes/java/main/com/fin/models"))
 }
