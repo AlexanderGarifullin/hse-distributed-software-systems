@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="#{task.new.title}">Create New Task</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<h1 th:text="#{task.new.title}">Create New Task</h1>
+
+<!-- Если есть общее сообщение об ошибке, его можно отобразить здесь -->
+<div th:if="${errorMessage}" style="color: red;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<form th:action="@{/tasks}" th:object="${task}" method="post">
+    <!-- Поле: Name -->
+    <label th:text="#{task.name.label}">Name:</label>
+    <input type="text" th:field="*{name}" /><br/>
+    <div th:if="${#fields.hasErrors('name')}" style="color: red;">
+        <ul>
+            <li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
+        </ul>
+    </div>
+
+    <!-- Поле: Time Limit -->
+    <label th:text="#{task.timeLimit.label}">Time Limit (ms):</label>
+    <input type="number" th:field="*{timeLimit}" /><br/>
+    <div th:if="${#fields.hasErrors('timeLimit')}" style="color: red;">
+        <ul>
+            <li th:each="err : ${#fields.errors('timeLimit')}" th:text="${err}"></li>
+        </ul>
+    </div>
+
+    <!-- Поле: Memory Limit -->
+    <label th:text="#{task.memoryLimit.label}">Memory Limit (MB):</label>
+    <input type="number" th:field="*{memoryLimit}" /><br/>
+    <div th:if="${#fields.hasErrors('memoryLimit')}" style="color: red;">
+        <ul>
+            <li th:each="err : ${#fields.errors('memoryLimit')}" th:text="${err}"></li>
+        </ul>
+    </div>
+
+    <!-- Legend (small textarea + button to expand) -->
+    <label>Legend:</label>
+    <textarea id="legendField" class="small-textarea" th:field="*{legend}"></textarea>
+    <button type="button" class="button"
+            onclick="openModal('legendField', 'Edit Legend')">Expand</button>
+
+    <!-- Input (small textarea + expand) -->
+    <label>Input:</label>
+    <textarea id="inputField" class="small-textarea" th:field="*{input}"></textarea>
+    <button type="button" class="button"
+            onclick="openModal('inputField', 'Edit Input')">Expand</button>
+
+    <!-- Поле: Output -->
+    <label th:text="#{task.output.label}">Output:</label>
+    <textarea th:field="*{output}"></textarea><br/>
+    <div th:if="${#fields.hasErrors('output')}" style="color: red;">
+        <ul>
+            <li th:each="err : ${#fields.errors('output')}" th:text="${err}"></li>
+        </ul>
+    </div>
+
+    <!-- Поле: Generation Rules -->
+    <label th:text="#{task.generationRules.label}">Generation Rules:</label>
+    <textarea th:field="*{generationRules}"></textarea><br/>
+    <div th:if="${#fields.hasErrors('generationRules')}" style="color: red;">
+        <ul>
+            <li th:each="err : ${#fields.errors('generationRules')}" th:text="${err}"></li>
+        </ul>
+    </div>
+
+    <button type="submit" th:text="#{task.submit.button}">Submit</button>
+</form>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <h3 id="modalTitle">Edit Field</h3>
+        <textarea id="modalTextarea" style="width:100%; height:150px;"></textarea>
+        <button class="save-button" onclick="saveModal('legendField')">Save</button>
+    </div>
+</div>
+
+<a th:href="@{/tasks}" th:text="#{task.return.link}">Return to Task List</a>
+
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>

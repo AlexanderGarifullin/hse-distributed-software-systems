@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="#{task.list.title}">Task List</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<h1 th:text="#{task.list.title}">Task List</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th th:text="#{task.name.label}">Name</th>
+        <th th:text="#{task.timeLimit.label}">Time Limit (ms)</th>
+        <th th:text="#{task.memoryLimit.label}">Memory Limit (MB)</th>
+        <th th:text="#{task.createdAt.label}">Created at</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="task : ${tasks}">
+        <td th:text="${task.id}"></td>
+        <td th:text="${task.name}"></td>
+        <td th:text="${task.timeLimit}"></td>
+        <td th:text="${task.memoryLimit}"></td>
+        <td th:text="${task.createdAt}"></td>
+        <td>
+            <a th:href="@{'/tasks/' + ${task.id} + '/edit'}" th:text="#{task.edit.link}">Edit</a>
+            <form th:action="@{'/tasks/' + ${task.id} + '/delete'}" method="post" style="display:inline;">
+                <button type="submit" th:text="#{task.delete.button}">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<a th:href="@{/tasks/new}" th:text="#{task.new.link}">Create New Task</a>
+</body>
+</html>
