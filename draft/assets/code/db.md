@@ -145,10 +145,10 @@ Ref: solutions.owner_id > users.id
 Ref: solutions.language_id > languages.id
 
 Ref: validators.owner_id > users.id
-Ref: validators.task_id > tasks.id
+Ref: validators.task_id - tasks.id
 Ref: validators.language_id > languages.id
 
 Ref: checkers.owner_id > users.id
-Ref: checkers.task_id > tasks.id
+Ref: checkers.task_id - tasks.id
 Ref: checkers.language_id > languages.id
 ```
