@@ -34,3 +34,16 @@
 4. Запустить docker: ` docker-compose up --build`
 5. Пользоваться на: `http://localhost:8080/tasks`
 6. Закрыть docker: `ctrl + c`
+
+
+# 5. Пример работы:
+![tasks](./draft/assets/screnshots/tasklist.png) 
+![tasks](./draft/assets/screnshots/badceatetask.png) 
+![tasks](./draft/assets/screnshots/edittask.png)
+![tasks](./draft/assets/screnshots/dbtask.png) 
+
+
+
+
+
+
