@@ -4,9 +4,10 @@ spring:
   profiles:
     active: prod
   datasource:
-    url: jdbc:postgresql://localhost:5432/dss
-    username: postgres
-    password: 123
+    url: jdbc:postgresql://${POSTGRES_CONTAINER_NAME:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:dss}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:123}
+
     driver-class-name: org.postgresql.Driver
 
     jpa:
