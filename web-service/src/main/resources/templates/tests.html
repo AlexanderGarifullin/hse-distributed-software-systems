@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Tests for Task</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<h1>Tests for Task <span th:text="${taskId}"></span></h1>
+
+<!-- Кнопка для скачивания тестов в виде ZIP -->
+<a th:href="@{'/tasks/' + ${taskId} + '/tests/download'}">Download Tests as ZIP</a>
+
+<!-- Форма для генерации тестов -->
+<form th:action="@{'/tasks/' + ${taskId} + '/tests/generate'}" method="post">
+    <label for="count">Number of tests:</label>
+    <input type="number" name="count" id="count" value="5" min="1"/>
+    <button type="submit">Generate Tests</button>
+</form>
+
+<!-- Таблица с тестами -->
+<table border="1">
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Test ID</th>
+        <th>Input (short)</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="test, iterStat : ${tests}">
+        <td th:text="${iterStat.count}"></td>
+        <td th:text="${test.id}"></td>
+        <td th:text="${#strings.abbreviate(test.input, 30)}"></td>
+        <td>
+            <a th:href="@{'/tasks/' + ${taskId} + '/tests/' + ${test.id} + '/edit'}">Edit</a>
+            <form th:action="@{'/tasks/' + ${taskId} + '/tests/' + ${test.id} + '/delete'}" method="post" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<a th:href="@{/tasks}">Back to Task List</a>
+</body>
+</html>
