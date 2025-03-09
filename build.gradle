@@ -11,7 +11,6 @@ subprojects {
 	apply plugin: 'java'
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
-	apply plugin: 'jacoco'
 	apply plugin: 'checkstyle'
 
 	sourceCompatibility = '21'
@@ -54,22 +53,6 @@ subprojects {
 	checkstyle {
 		toolVersion = '10.3'
 		configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
-	}
-}
-
-
-tasks.register('aggregateJacocoReport', JacocoReport) {
-	subprojects.each { subproj ->
-		dependsOn subproj.tasks.named('test')
-		executionData subproj.fileTree(dir: "${subproj.buildDir}", includes: [
-				"jacoco/test.exec", "jacoco/test*.exec"
-		])
-		sourceDirectories.from += files(subproj.sourceSets.main.allSource.srcDirs)
-		classDirectories.from += files(subproj.sourceSets.main.output)
-	}
-	reports {
-		xml.required = true
-		html.required = true
 	}
 }
 
