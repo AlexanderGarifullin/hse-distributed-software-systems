@@ -1,5 +1,16 @@
-version: '3.7'
+version: '3.8'
 services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "123"
+      POSTGRES_DB: dss
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.2
     container_name: zookeeper
@@ -23,3 +34,55 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  web-backend:
+    build:
+      context: .
+      dockerfile: web-service/Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      POSTGRES_CONTAINER_NAME: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: dss
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "123"
+      GENERATOR_SERVICE_URL: http://generator-service:8082
+      EXPORT_SERVICE_URL: http://export-service:8083
+    depends_on:
+      - postgres
+      - kafka
+
+  generator-service:
+    build:
+      context: .
+      dockerfile: generator-service/Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      POSTGRES_CONTAINER_NAME: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: dss
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "123"
+    depends_on:
+      - postgres
+
+  export-service:
+    build:
+      context: .
+      dockerfile: export-service/Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      POSTGRES_CONTAINER_NAME: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: dss
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "123"
+    depends_on:
+      - postgres
+      - kafka
+
+volumes:
+  postgres_data:

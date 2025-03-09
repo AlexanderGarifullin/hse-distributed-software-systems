@@ -1,5 +1,5 @@
 rootProject.name = 'diss'
 include 'web-service'
 include 'export-service'
-include 'generator-sevice'
+include 'generator-service'
 
