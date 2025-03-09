@@ -30,4 +30,12 @@ P.S.S. Чтобы увидеть новые тесты, нужно обнови�
 
 ![tasks](./draft2/assets/tasks.png) 
 
-![tasks](./draft2/assets/tasks.png) 
+![tasks](./draft2/assets/tests.png)
+
+![tasks](./draft2/assets/editTest.png)
+
+![tasks](./draft2/assets/testDownload.png)
+
+![tasks](./draft2/assets/testSamples.png)
+
+![tasks](./draft2/assets/testInputSample.png)
