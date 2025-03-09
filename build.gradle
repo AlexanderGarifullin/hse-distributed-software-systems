@@ -1,67 +1,76 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.4.2'
-	id 'io.spring.dependency-management' version '1.1.7'
-	id 'jacoco'
-	id 'checkstyle'
-
+	id 'org.springframework.boot' version '3.4.2' apply false
+	id 'io.spring.dependency-management' version '1.1.7' apply false
 }
 
 group = 'hse.dss'
 version = '0.0.1-SNAPSHOT'
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
+	apply plugin: 'jacoco'
+	apply plugin: 'checkstyle'
+
+	sourceCompatibility = '21'
+	targetCompatibility = '21'
+
+	configurations {
+		compileOnly {
+			extendsFrom annotationProcessor
+		}
+	}
+
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		// spring
+		implementation 'org.springframework.boot:spring-boot-starter-web'
+		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+		implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+		// lombok
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+
+		//db
+		runtimeOnly 'org.postgresql:postgresql'
+
+		// test
+		testImplementation 'org.springframework.boot:spring-boot-starter-test'
+		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+		testImplementation 'org.testcontainers:junit-jupiter:1.18.0'
+		testImplementation 'org.testcontainers:postgresql:1.18.0'
+	}
+
+	test {
+		useJUnitPlatform()
+	}
+
+	checkstyle {
+		toolVersion = '10.3'
+		configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 	}
 }
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
+
+tasks.register('aggregateJacocoReport', JacocoReport) {
+	subprojects.each { subproj ->
+		dependsOn subproj.tasks.named('test')
+		executionData subproj.fileTree(dir: "${subproj.buildDir}", includes: [
+				"jacoco/test.exec", "jacoco/test*.exec"
+		])
+		sourceDirectories.from += files(subproj.sourceSets.main.allSource.srcDirs)
+		classDirectories.from += files(subproj.sourceSets.main.output)
 	}
-}
-
-repositories {
-	mavenCentral()
-}
-
-checkstyle {
-	toolVersion = '10.3'
-	configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
-}
-
-dependencies {
-	// spring
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-	// lombok
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-
-	//db
-	implementation 'org.liquibase:liquibase-core'
-	runtimeOnly 'org.postgresql:postgresql'
-
-	// test
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testImplementation 'org.testcontainers:junit-jupiter:1.18.0'
-	testImplementation 'org.testcontainers:postgresql:1.18.0'
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
-}
-
-jacocoTestReport {
 	reports {
+		xml.required = true
 		html.required = true
-		xml.required  = true
 	}
-
-	classDirectories.setFrom(classDirectories.files - files("build/classes/java/main/com/fin/models"))
 }
+
+
