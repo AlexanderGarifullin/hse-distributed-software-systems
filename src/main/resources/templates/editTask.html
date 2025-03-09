@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="#{task.edit.link}">Edit Task</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<h1 th:text="#{task.edit.link}">Edit Task</h1>
+
+<!-- Отображение общего сообщения об ошибке, если оно есть -->
+<div th:if="${errorMessage}" style="color: red;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<form th:action="@{'/tasks/' + ${task.id}}" th:object="${task}" method="post">
+    <!-- Поле: Name -->
+    <label th:text="#{task.name.label}">Name:</label>
+    <input type="text" th:field="*{name}" /><br/>
+    <div th:if="${#fields.hasErrors('name')}" style="color: red;">
+        <ul>
+            <li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
+        </ul>
+    </div>
+
+    <!-- Поле: Time Limit -->
+    <label th:text="#{task.timeLimit.label}">Time Limit (ms):</label>
+    <input type="number" th:field="*{timeLimit}" /><br/>
+    <div th:if="${#fields.hasErrors('timeLimit')}" style="color: red;">
+        <ul>
+            <li th:each="err : ${#fields.errors('timeLimit')}" th:text="${err}"></li>
+        </ul>
+    </div>
+
+    <!-- Поле: Memory Limit -->
+    <label th:text="#{task.memoryLimit.label}">Memory Limit (MB):</label>
+    <input type="number" th:field="*{memoryLimit}" /><br/>
+    <div th:if="${#fields.hasErrors('memoryLimit')}" style="color: red;">
+        <ul>
+            <li th:each="err : ${#fields.errors('memoryLimit')}" th:text="${err}"></li>
+        </ul>
+    </div>
+
+    <!-- Поле: Legend -->
+    <label th:text="#{task.legend.label}">Legend:</label>
+    <textarea th:field="*{legend}"></textarea><br/>
+    <div th:if="${#fields.hasErrors('legend')}" style="color: red;">
+        <ul>
+            <li th:each="err : ${#fields.errors('legend')}" th:text="${err}"></li>
+        </ul>
+    </div>
+
+    <!-- Поле: Input -->
+    <label th:text="#{task.input.label}">Input:</label>
+    <textarea th:field="*{input}"></textarea><br/>
+    <div th:if="${#fields.hasErrors('input')}" style="color: red;">
+        <ul>
+            <li th:each="err : ${#fields.errors('input')}" th:text="${err}"></li>
+        </ul>
+    </div>
+
+    <!-- Поле: Output -->
+    <label th:text="#{task.output.label}">Output:</label>
+    <textarea th:field="*{output}"></textarea><br/>
+    <div th:if="${#fields.hasErrors('output')}" style="color: red;">
+        <ul>
+            <li th:each="err : ${#fields.errors('output')}" th:text="${err}"></li>
+        </ul>
+    </div>
+
+    <!-- Поле: Generation Rules -->
+    <label th:text="#{task.generationRules.label}">Generation Rules:</label>
+    <textarea th:field="*{generationRules}"></textarea><br/>
+    <div th:if="${#fields.hasErrors('generationRules')}" style="color: red;">
+        <ul>
+            <li th:each="err : ${#fields.errors('generationRules')}" th:text="${err}"></li>
+        </ul>
+    </div>
+
+    <button type="submit" th:text="#{task.submit.button}">Submit</button>
+</form>
+<a th:href="@{/tasks}" th:text="#{task.return.link}">Return to Task List</a>
+
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>
