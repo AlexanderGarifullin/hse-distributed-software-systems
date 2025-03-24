@@ -10,6 +10,8 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend_net
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.2
@@ -19,6 +21,8 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
+    networks:
+      - backend_net
 
   kafka:
     image: confluentinc/cp-kafka:7.3.2
@@ -34,6 +38,8 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - backend_net
 
   web-backend:
     build:
@@ -42,6 +48,7 @@ services:
     ports:
       - "8081:8081"
     environment:
+      SPRING_APPLICATION_NAME: web-backend
       POSTGRES_CONTAINER_NAME: postgres
       POSTGRES_PORT: "5432"
       POSTGRES_DB: dss
@@ -53,6 +60,9 @@ services:
     depends_on:
       - postgres
       - kafka
+      - logstash
+    networks:
+      - backend_net
 
   generator-service:
     build:
@@ -61,6 +71,7 @@ services:
     ports:
       - "8082:8082"
     environment:
+      SPRING_APPLICATION_NAME: generator-service
       POSTGRES_CONTAINER_NAME: postgres
       POSTGRES_PORT: "5432"
       POSTGRES_DB: dss
@@ -69,6 +80,9 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     depends_on:
       - postgres
+      - logstash
+    networks:
+      - backend_net
 
   export-service:
     build:
@@ -77,6 +91,7 @@ services:
     ports:
       - "8083:8083"
     environment:
+      SPRING_APPLICATION_NAME: export-service
       POSTGRES_CONTAINER_NAME: postgres
       POSTGRES_PORT: "5432"
       POSTGRES_DB: dss
@@ -85,6 +100,60 @@ services:
     depends_on:
       - postgres
       - kafka
+      - logstash
+    networks:
+      - backend_net
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.0
+    container_name: elasticsearch
+    environment:
+      - node.name=es01
+      - cluster.name=docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - backend_net
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.7.0
+    container_name: logstash
+    volumes:
+      - ./logstash/config:/usr/share/logstash/config
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    ports:
+      - "5000:5000"
+    depends_on:
+      - elasticsearch
+    networks:
+      - backend_net
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.7.0
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - backend_net
+
 
 volumes:
   postgres_data:
+  esdata:
+    driver: local
+
+networks:
+  backend_net:
+    name: backend_net
+    driver: bridge
