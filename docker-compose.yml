@@ -55,7 +55,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: "123"
       GENERATOR_SERVICE_URL: http://generator-service:8082
-      EXPORT_SERVICE_URL: http://export-service:8083
+      EXPORT_SERVICE_URL: http://export-lb:8083
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     depends_on:
       - postgres
@@ -88,8 +88,8 @@ services:
     build:
       context: .
       dockerfile: export-service/Dockerfile
-    ports:
-      - "8083:8083"
+#    ports:
+#      - "8083:8083"
     environment:
       SPRING_APPLICATION_NAME: export-service
       POSTGRES_CONTAINER_NAME: postgres
@@ -103,6 +103,18 @@ services:
       - logstash
     networks:
       - backend_net
+  export-lb:
+    image: nginx:latest
+    container_name: export-lb
+    ports:
+      - "8083:8083"
+    volumes:
+      - ./nginx-export.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - export-service
+    networks:
+      - backend_net
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.7.0
     container_name: elasticsearch
@@ -146,7 +158,6 @@ services:
       - elasticsearch
     networks:
       - backend_net
-
 
 volumes:
   postgres_data:
