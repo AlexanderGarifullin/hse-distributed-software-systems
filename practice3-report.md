@@ -17,11 +17,11 @@
 
 ## Discover
 Чтобы посмотреть логи:
-1. `Discover`
-2. `Create data view`
-3. Задать любое `name`
-4. Задать `Index pattern`: `microservices-logs-*`
-5. `Save data view to Kibana`
+1. Выбрать `Discover` в меню слева в разделе `Analytics`.
+2. Нажать `Create data view`.
+3. Задать любое `name`.
+4. Задать `Index pattern`: `microservices-logs-*`.
+5. Нажать `Save data view to Kibana`.
 
 ## Пример логов микросервисов: 
 ```json
