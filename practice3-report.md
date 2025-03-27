@@ -15,6 +15,14 @@
 ![tasks](/draft3/assets/elklogs.png)  
 ![tasks](/draft3/assets/elksamle.png)  
 
+## Discover
+Чтобы посмотреть логи:
+1. `Discover`
+2. `Create data view`
+3. Задать любое `name`
+4. Задать `Index pattern`: `microservices-logs-*`
+5. `Save data view to Kibana`
+
 ## Пример логов микросервисов: 
 ```json
 {
@@ -115,11 +123,60 @@
   "_score": null
 }
 ```
+```json
+{
+  "@timestamp": [
+    "2025-03-27T17:25:55.347Z"
+  ],
+  "@version": [
+    "1"
+  ],
+  "@version.keyword": [
+    "1"
+  ],
+  "level": [
+    "INFO"
+  ],
+  "level_value": [
+    20000
+  ],
+  "level.keyword": [
+    "INFO"
+  ],
+  "logger_name": [
+    "hse.dss.service.TestGenerationConsumerService"
+  ],
+  "logger_name.keyword": [
+    "hse.dss.service.TestGenerationConsumerService"
+  ],
+  "message": [
+    "Generated test with id 15 for task 1"
+  ],
+  "message.keyword": [
+    "Generated test with id 15 for task 1"
+  ],
+  "service": [
+    "generator-service"
+  ],
+  "service.keyword": [
+    "generator-service"
+  ],
+  "thread_name": [
+    "org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1"
+  ],
+  "thread_name.keyword": [
+    "org.springframework.kafka.KafkaListenerEndpointContainer#0-0-C-1"
+  ],
+  "_id": "Gd-j2JUBA_cku4dUmnaj",
+  "_index": "microservices-logs-2025.03.27",
+  "_score": null
+}
+```
 
 ## Гайд по запуску:
 1. Скачать репозиторий.
 2. Зайти в командную строку.
-3. Запустить docker:  `docker compose up -d --build --scale export-service=3`
+3. Запустить docker:  `docker compose up --build --scale export-service=3`
 4. Пользоваться на: http://localhost:8081/tasks
 5. `Kibana` доступна на: http://localhost:5601/
 6. Закрыть docker: ctrl + c
