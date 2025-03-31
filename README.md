@@ -1,81 +1,47 @@
-# API Documentation
+# HSE DSS
+Репозиторий с лабораторным работами по дисциплине "Разработка распределенных систем" в НИУ ВШЭ Пермь.  
 
-This document provides an overview of the available endpoints in the API,
-their purposes, and the corresponding HTTP methods.
+*Тема работы*: Разработка системы автоматической генерации тестов для задач по спортивному программированию с учётом
+настроек пользователя.
 
-## TaskController
+# Ограничения
+В рамках данного курса была выполнена лишь часть заявленной темы. В частности, рассматривалась работа лишь
+с тестами и задачами.
 
-The `TaskController` manages HTTP requests related to tasks.
-It provides endpoints for creating, updating, retrieving, and deleting tasks.
+# Лабораторные работы
+Всего было 4 лабораторных работ, для каждой из которых был написан отчет (`report.md` файл). Каждая работа была 
+выполнена в отдельной ветке. 
+1. `practice0` - CRUD API для одной entity + InMemoryStorage.
+2. `practice1` - БД + UI + CI (сборка + автотесты + линтер).
+3. `practice2` - Разбиение монолита на микросервисы.
+4. `practice3` - Масштабирование компонентов (горизонтальное) + централизованное логирование микросервисов.
 
-### Endpoints
+# Что было сделано в итоге?
+В итоге были реализованы 3 микросервиса:
+1. `Web-service` - основное веб-приложение (UI + API Gateway). Отвечает за управление задачами и тестами (CRUD) +
+   вызывает другие микросервисы (Producer).
+2. `Export-service` - микросервис для экспорта данных (генерация zip-архива для скачивания). Общение с сервисом
+   синхронное, через `HTML`.
+3. `Generator-service`- микросервис для генерации тестов (Consumer). Общение асинхронное, через `Kafka`. 
 
-1. **Get Tasks by User ID**
-    - **Endpoint:** `GET /tasks/user/{userId}`
-    - **Description:** Retrieves all tasks associated with a specific user.
-    - **Parameters:**
-        - `userId` (Path): The ID of the user whose tasks are to be fetched.
-    - **Returns:** A list of tasks for the specified user.
+Для горизонтального масштабирования был добавлен `njinx`, который перехватывал запросы с `web-service` 
+на `export-service`. Был настроен `CI` с автоматическим тестированием и анализом кода.
+Был добавлен `ELK` для логирования. Написан `docker-compose` для быстрого развертывания. Использовал миграцию БД.
+Были написаны юнит и интеграционные тесты.
 
-2. **Get Task by ID**
-    - **Endpoint:** `GET /tasks/{taskId}`
-    - **Description:** Retrieves a specific task by its ID.
-    - **Parameters:**
-        - `taskId` (Path): The ID of the task to retrieve.
-    - **Returns:** The task with the specified ID.
+![deploy](d-deploy.png)
 
-3. **Create Task**
-    - **Endpoint:** `POST /tasks/user/{userId}`
-    - **Description:** Creates a new task for a specific user.
-    - **Parameters:**
-        - `userId` (Path): The ID of the user for whom the task is being created.
-        - `task` (Body): The task payload containing task details.
-    - **Returns:** The created task.
+# Гайд по запуску. 
+1. Скачать репозиторий.
+2. Зайти в командную строку.
+3. Запустить docker:  `docker compose up --build --scale export-service=3`.
+4. Пользоваться на: http://localhost:8081/tasks.
+5. `Kibana` доступна на: http://localhost:5601/.
+6. Закрыть docker: `ctrl + c`.
 
-4. **Update Task**
-    - **Endpoint:** `PUT /tasks/{taskId}`
-    - **Description:** Updates an existing task.
-    - **Parameters:**
-        - `taskId` (Path): The ID of the task to update.
-        - `task` (Body): The task payload containing updated task details.
-    - **Returns:** The updated task.
-
-5. **Delete Task**
-    - **Endpoint:** `DELETE /tasks/{taskId}`
-    - **Description:** Deletes a task by its ID.
-    - **Parameters:**
-        - `taskId` (Path): The ID of the task to delete.
-    - **Returns:** A response indicating the task was deleted.
-
-## TestController
-
-The `TestController` handles HTTP requests related to tests.
-It provides an endpoint for fetching a test related to a specific task.
-
-### Endpoints
-
-1. **Generate Test by Task ID**
-    - **Endpoint:** `GET /tests/task/{taskId}`
-    - **Description:** Generates a test for a specific task.
-    - **Parameters:**
-        - `taskId` (Path): The ID of the task for which to generate a test.
-    - **Returns:** The generated test as a String.
----
-
-## Storage and Initial Data
-
-- **Storage:** The application uses an **InMemoryStorage** for storing tasks and user data. This means that all data is stored in memory and will be lost when the application is restarted.
-
-- **Starter User:** When the application starts, a default user is created with the following details:
-  ```java
-  private User createStarterUser() {
-      return User.builder()
-              .id(1L)
-              .login("STARTER")
-              .build();
-  }
-    ```
----
-
-This README provides a concise overview of the available endpoints and their functionalities. 
-For more detailed information, refer to the respective controller and service implementations.
+# Стек
+1. `Java 21` & `Gradle`.
+2. `Spring & Spring Boot` (`web` + `jpa` + `validation` + `test`).
+3. `Lombok` + `Liquibase` + `Thymeleaf` + `Jackson`. 
+4. `PostgreSQL` + `ELK` + `NJINX` + `Kafka`.
+5. `Dockerfile` & `Docker compose`;
