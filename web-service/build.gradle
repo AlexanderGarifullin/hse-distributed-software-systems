@@ -1,0 +1,8 @@
+dependencies {
+    // spring
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    // db
+    implementation 'org.liquibase:liquibase-core'
+}
