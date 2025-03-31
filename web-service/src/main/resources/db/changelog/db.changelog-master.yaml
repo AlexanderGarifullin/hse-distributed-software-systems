@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/002_create_table_tasks.sql
   - include:
       file: db/changelog/003_create_table_tests.sql
+  - include:
+      file: db/changelog/004_alter_fk_table_tests.sql
